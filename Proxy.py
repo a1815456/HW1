@@ -20,7 +20,7 @@ proxyPort = int(args.port)
 try:
   # Create a server socket
   # ~~~~ INSERT CODE ~~~~
-  ServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #web to TCP
+  serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #web to TCP
   # ~~~~ END CODE INSERT ~~~~
   print ('Created socket')
 except:
@@ -118,6 +118,8 @@ while True:
     # ProxyServer finds a cache hit
     # Send back response to client 
     # ~~~~ INSERT CODE ~~~~
+    for line in cacheData:
+         clientSocket.send(line.encode())
     # ~~~~ END CODE INSERT ~~~~
     cacheFile.close()
     print ('Sent to the client:')
