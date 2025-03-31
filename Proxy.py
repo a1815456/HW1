@@ -113,17 +113,30 @@ while True:
     # Check wether the file is currently in the cache
     cacheFile = open(cacheLocation, "r")
     cacheData = cacheFile.readlines()
+    cache_str = ''.join(cacheData)
+
+    cache_control_match = re.search(r'Cache-Control:.*?max-age=(\d+)', cache_str, re.IGNORECASE)
+    max_age = int(cache_control_match.group(1)) if cache_control_match else None
+    modified_time = os.path.getmtime(cacheLocation) 
+    age = time.time() - modified_time
+    print(f"Cache file age: {int(age)} seconds")
+    if age >= max_age:
+      print("Expired")
+      raise Exception("Cache expired")
+
 
     print ('Cache hit! Loading from cache file: ' + cacheLocation)
     # ProxyServer finds a cache hit
     # Send back response to client 
     # ~~~~ INSERT CODE ~~~~
     for cached_line in cacheData:
-         clientSocket.send(cached_line.encode())
+      clientSocket.send(cached_line.encode())
     # ~~~~ END CODE INSERT ~~~~
     cacheFile.close()
     print ('Sent to the client:')
-    print ('> ' + cacheData)
+
+    for line in cacheData:
+      print ('> ' + cacheData)
   except:
     # cache miss.  Get resource from origin server
     originServerSocket = None
